@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Plus, ShieldCheck, Terminal, ShoppingBag, Trash2, Edit2, TrendingUp
+  Plus, Terminal, ShoppingBag, Trash2, Edit2, TrendingUp
 } from 'lucide-react';
 import { listenProducts } from '../firebase/db';
 import { useAuth } from '../context/AuthContext';

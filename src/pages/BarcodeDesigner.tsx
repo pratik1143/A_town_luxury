@@ -803,7 +803,6 @@ export const BarcodeDesigner: React.FC = () => {
                     const discount = mrp > sale ? Math.round(((mrp - sale) / mrp) * 100) : 0;
                     
                     const H = calibration.labelHeight;
-                    const W = calibration.labelWidth;
                     
                     const fontProduct = `${H * 0.11 * 6}px`;
                     const fontDetails = `${H * 0.08 * 6}px`;

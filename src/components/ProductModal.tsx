@@ -1349,11 +1349,13 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                       
                       {/* simulated barcode label */}
                       {(() => {
-                        const activePreset = {
-                          '25x15': { widthMm: 25, heightMm: 15 },
-                          '38x25': { widthMm: 38, heightMm: 25 },
-                          '50x25': { widthMm: 50, heightMm: 25 }
-                        }[labelPreset] || { widthMm: 38, heightMm: 25 };
+                        const activePreset = labelPreset === 'custom'
+                          ? { widthMm: calibration.labelWidth, heightMm: calibration.labelHeight }
+                          : {
+                              '25x15': { widthMm: 25, heightMm: 15 },
+                              '38x25': { widthMm: 38, heightMm: 25 },
+                              '50x25': { widthMm: 50, heightMm: 25 }
+                            }[labelPreset as '25x15' | '38x25' | '50x25'] || { widthMm: 38, heightMm: 25 };
                         const mrp = Number(previewProd.mrp || previewProd.sellingPrice || 0);
                         const sale = Number(previewProd.sellingPrice || 0);
                         const discount = mrp > sale ? Math.round(((mrp - sale) / mrp) * 100) : 0;
