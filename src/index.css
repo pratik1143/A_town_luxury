@@ -1,0 +1,154 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@config "../tailwind.config.js";
+
+@layer base {
+  body {
+    @apply bg-[#F4F5FC] text-[#1C1A17] font-sans antialiased overflow-x-hidden selection:bg-[#5D5FEF]/20 selection:text-[#5D5FEF];
+  }
+  
+  /* Premium scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F4F5FC;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #E2E4F0;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #5D5FEF;
+  }
+}
+
+/* Custom interactive styles */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(17, 17, 17, 0.05);
+  box-shadow: 0 4px 24px 0 rgba(17, 17, 17, 0.02);
+}
+
+.glass-panel-gold {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(201, 162, 39, 0.15);
+  box-shadow: 0 4px 24px 0 rgba(201, 162, 39, 0.05);
+}
+
+.gold-text-gradient {
+  background: linear-gradient(135deg, #A37F18 0%, #C9A227 50%, #E0B83C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Keyframes for luxury gold glow border */
+@config "../tailwind.config.js";
+@keyframes borderGlow {
+  0% {
+    border-color: rgba(201, 162, 39, 0.15);
+    box-shadow: 0 0 10px rgba(201, 162, 39, 0.05);
+  }
+  50% {
+    border-color: rgba(201, 162, 39, 0.4);
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.15);
+  }
+  100% {
+    border-color: rgba(201, 162, 39, 0.15);
+    box-shadow: 0 0 10px rgba(201, 162, 39, 0.05);
+  }
+}
+
+.glow-border-active {
+  animation: borderGlow 4s infinite ease-in-out;
+}
+
+
+
+/* Glassmorphism table styling */
+.premium-table th {
+  @apply text-zinc-500 font-medium text-xs tracking-wider uppercase py-4 px-6 border-b border-zinc-100 bg-zinc-50/70;
+}
+
+.premium-table td {
+  @apply py-4 px-6 border-b border-zinc-100 text-sm align-middle text-[#111111];
+}
+
+.premium-table tr {
+  @apply hover:bg-zinc-50/50 transition-colors duration-150;
+}
+
+/* Global Print Stylesheet and resets */
+@media print {
+  body > #root {
+    display: none !important;
+  }
+  
+  body > #print-root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+    overflow: visible !important;
+  }
+
+  @page {
+    margin: 0;
+  }
+}
+
+@media screen {
+  body > #print-root {
+    display: none !important;
+  }
+}
+
+/* Cream Theme Core Tokens */
+:root {
+  --cream-bg: #FAF7EC;
+  --cream-card: #FDFCF7;
+  --intelly-dark: #1E1B18;
+  --intelly-yellow: #FCD863;
+  --intelly-pink: #F8ADC5;
+  --intelly-green: #9AB375;
+  --intelly-blue: #A9CEF3;
+}
+
+.bg-cream-base {
+  background-color: var(--cream-bg) !important;
+}
+
+.bg-cream-card {
+  background-color: var(--cream-card) !important;
+}
+
+.bg-intelly-dark {
+  background-color: var(--intelly-dark) !important;
+}
+
+.bg-intelly-yellow {
+  background-color: var(--intelly-yellow) !important;
+}
+
+.bg-intelly-pink {
+  background-color: var(--intelly-pink) !important;
+}
+
+.bg-intelly-green {
+  background-color: var(--intelly-green) !important;
+}
+
+.bg-intelly-blue {
+  background-color: var(--intelly-blue) !important;
+}
+
+
