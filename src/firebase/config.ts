@@ -12,10 +12,20 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Check if variables are valid config
-const isFirebaseConfigured = 
-  import.meta.env.VITE_FIREBASE_API_KEY && 
-  import.meta.env.VITE_FIREBASE_PROJECT_ID;
+// Check if variables are valid config (and not placeholder/dummy values)
+const isFirebaseConfigured = (() => {
+  const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
+  const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+  if (!apiKey || !projectId) return false;
+  
+  const isPlaceholder = 
+    apiKey.includes('---') || 
+    apiKey.includes('placeholder') || 
+    apiKey.toLowerCase().includes('your_') || 
+    projectId.toLowerCase().includes('your_');
+    
+  return !isPlaceholder;
+})();
 
 let app;
 let auth: any = null;
