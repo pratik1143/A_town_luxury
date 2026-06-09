@@ -1,7 +1,8 @@
 import { 
   signInWithEmailAndPassword, 
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { auth, isFirebaseConfigured } from './config';
 
@@ -41,26 +42,6 @@ const DEFAULT_CASHIER: UserSession = {
   isActive: true
 };
 
-// Cache buster: if the stored mock users or session user contains 'Alexander Vance', clear the storage to force re-initialization.
-const existingMockUsers = localStorage.getItem('town_mock_users');
-const existingSession = localStorage.getItem('town_session_user');
-if (
-  (existingMockUsers && existingMockUsers.includes('Alexander Vance')) ||
-  (existingSession && existingSession.includes('Alexander Vance'))
-) {
-  localStorage.removeItem('town_mock_users');
-  localStorage.removeItem('town_session_user');
-  localStorage.removeItem('town_products');
-  localStorage.removeItem('town_categories');
-  localStorage.removeItem('town_logs');
-  localStorage.removeItem('town_activity_logs');
-  localStorage.removeItem('town_bills_registry');
-  localStorage.removeItem('town_label_logs');
-  localStorage.removeItem('town_customers');
-  localStorage.removeItem('town_suppliers');
-  localStorage.removeItem('town_purchase_orders');
-}
-
 // Seed local mock users
 if (!localStorage.getItem('town_mock_users')) {
   localStorage.setItem('town_mock_users', JSON.stringify([DEFAULT_ADMIN, DEFAULT_MANAGER, DEFAULT_CASHIER]));
@@ -83,19 +64,16 @@ if (savedSession) {
 
 export const loginUser = async (usernameOrEmail: string, password: string): Promise<UserSession> => {
   if (isFirebaseConfigured && auth) {
-    // If real Firebase configured, authenticate with email/password.
-    // For convenience, we assume usernameOrEmail is email. If not, append domain.
     const email = usernameOrEmail.includes('@') ? usernameOrEmail : `${usernameOrEmail}@atownluxuries.com`;
     const credentials = await signInWithEmailAndPassword(auth, email, password);
     
-    // In real app, you would fetch the user's role from a 'users' Firestore collection.
-    // We will return a mock admin format matching the UID for Phase 1.
+    // Return session format matching real auth
     const session: UserSession = {
       uid: credentials.user.uid,
       email: credentials.user.email || email,
       fullName: credentials.user.displayName || 'Luxury Admin',
       role: 'admin',
-      username: usernameOrEmail,
+      username: usernameOrEmail.split('@')[0],
       isActive: true
     };
     
@@ -109,28 +87,83 @@ export const loginUser = async (usernameOrEmail: string, password: string): Prom
           u => (u.username === usernameOrEmail || u.email === usernameOrEmail)
         );
         
+        // Only allow login if user exists and password is correct
         if (user && password === 'luxuryadmin123') {
           currentMockUser = user;
           localStorage.setItem('town_session_user', JSON.stringify(user));
-          // Notify listeners
           authListeners.forEach(callback => callback(user));
           resolve(user);
         } else {
-          reject(new Error("Invalid credentials. Please use 'admin', 'manager', or 'cashier' with 'luxuryadmin123'."));
+          reject(new Error("Access Denied: Invalid security signature or password."));
         }
-      }, 800); // Luxury delay
+      }, 500);
+    });
+  }
+};
+
+export const registerUser = async (email: string, password: string, fullName: string, role: string = 'admin'): Promise<UserSession> => {
+  if (isFirebaseConfigured && auth) {
+    const credentials = await createUserWithEmailAndPassword(auth, email, password);
+    
+    // Update profile with fullName
+    if (credentials.user) {
+      const { updateProfile } = await import('firebase/auth');
+      await updateProfile(credentials.user, { displayName: fullName });
+    }
+    
+    const session: UserSession = {
+      uid: credentials.user.uid,
+      email: credentials.user.email || email,
+      fullName: fullName,
+      role: role,
+      username: email.split('@')[0],
+      isActive: true
+    };
+    
+    return session;
+  } else {
+    // Local simulation registration
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const mockUsers: UserSession[] = JSON.parse(localStorage.getItem('town_mock_users') || '[]');
+        if (mockUsers.some(u => u.email === email || u.username === email.split('@')[0])) {
+          reject(new Error("Registration Failed: Access signature already registered."));
+          return;
+        }
+        
+        const newUser: UserSession = {
+          uid: `local-${Date.now()}`,
+          email: email,
+          fullName: fullName,
+          role: role,
+          username: email.split('@')[0],
+          isActive: true
+        };
+        mockUsers.push(newUser);
+        localStorage.setItem('town_mock_users', JSON.stringify(mockUsers));
+        
+        currentMockUser = newUser;
+        localStorage.setItem('town_session_user', JSON.stringify(newUser));
+        authListeners.forEach(callback => callback(newUser));
+        resolve(newUser);
+      }, 500);
     });
   }
 };
 
 export const logoutUser = async (): Promise<void> => {
   if (isFirebaseConfigured && auth) {
-    await signOut(auth);
-  } else {
-    currentMockUser = null;
-    localStorage.removeItem('town_session_user');
-    authListeners.forEach(callback => callback(null));
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.warn("Firebase signOut failed, clearing local session:", error);
+    }
   }
+  
+  // Always clear local session and notify listeners to ensure logout succeeds
+  currentMockUser = null;
+  localStorage.removeItem('town_session_user');
+  authListeners.forEach(callback => callback(null));
 };
 
 export const listenAuthState = (callback: (user: UserSession | null) => void) => {

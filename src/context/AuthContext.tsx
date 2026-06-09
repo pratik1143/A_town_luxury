@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { listenAuthState, loginUser, logoutUser, type UserSession } from '../firebase/auth';
+import { listenAuthState, loginUser, logoutUser, registerUser, type UserSession } from '../firebase/auth';
 
 interface AuthContextType {
   user: UserSession | null;
   loading: boolean;
   login: (usernameOrEmail: string, password: string) => Promise<void>;
+  register: (email: string, password: string, fullName: string, role?: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -32,6 +33,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const register = async (email: string, password: string, fullName: string, role: string = 'admin') => {
+    setLoading(true);
+    try {
+      const session = await registerUser(email, password, fullName, role);
+      setUser(session);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async () => {
     setLoading(true);
     try {
@@ -43,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

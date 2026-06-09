@@ -108,11 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Footer Logout */}
           <div className="mt-6 flex-shrink-0">
             <button
-              onClick={() => {
-                if (confirm("Are you sure you want to log out of A Town Luxury?")) {
-                  logout();
-                }
-              }}
+              onClick={logout}
               title="Logout System"
               className="w-12 h-12 flex items-center justify-center text-white/60 hover:text-red-300 hover:bg-white/10 rounded-[20px] transition-all cursor-pointer flex-shrink-0"
             >

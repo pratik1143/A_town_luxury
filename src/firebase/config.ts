@@ -19,7 +19,6 @@ const isFirebaseConfigured = (() => {
   if (!apiKey || !projectId) return false;
   
   const isPlaceholder = 
-    apiKey.includes('---') || 
     apiKey.includes('placeholder') || 
     apiKey.toLowerCase().includes('your_') || 
     projectId.toLowerCase().includes('your_');
