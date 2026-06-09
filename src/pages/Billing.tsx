@@ -279,7 +279,7 @@ export const Billing: React.FC = () => {
         cashierName: user?.fullName || 'Mr Harish Chaudhary',
         items: newBillItems,
         subtotal: subtotal,
-        gst: gstInclusive,
+        gst: 0,
         discount: discountDeduction,
         total: total,
         paymentMode: paymentMode,
@@ -971,10 +971,7 @@ export const Billing: React.FC = () => {
                   <span>Subtotal Amount:</span>
                   <span className="text-black font-mono">Rs. {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
-                <div className="flex justify-between text-[10px] text-zinc-400">
-                  <span>Inclusive GST (18% tax):</span>
-                  <span className="font-mono">Rs. {gstInclusive.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                </div>
+
                 {discount > 0 && (
                   <div className="flex justify-between text-red-500 font-black">
                     <span>Discount Deduction ({discount}%):</span>

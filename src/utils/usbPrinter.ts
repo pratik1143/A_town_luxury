@@ -60,11 +60,10 @@ export const printUSBReceipt = async (
     commands += ALIGN_CENTER + BOLD_ON + CHAR_DOUBLE + config.storeName.toUpperCase() + '\n' + CHAR_NORMAL + BOLD_OFF;
   }
 
-  // 2. STORE ADDRESS, TEL, GSTIN
+  // 2. STORE ADDRESS & TEL
   commands += ALIGN_CENTER;
   if (config.showAddress) commands += config.address + '\n';
   if (config.showPhone) commands += 'Tel: ' + config.phone + '\n';
-  if (config.showGSTIN) commands += BOLD_ON + 'GSTIN: ' + config.gstin + '\n' + BOLD_OFF;
   
   commands += SEPARATOR;
 
@@ -110,7 +109,6 @@ export const printUSBReceipt = async (
   // 5. SUBTOTALS, TAXES, PAY SUMMARY
   commands += ALIGN_RIGHT;
   commands += padColumns('Subtotal:', `Rs. ${bill.subtotal.toFixed(2)}`, width) + '\n';
-  commands += padColumns('GST (18% Incl.):', `Rs. ${bill.gst.toFixed(2)}`, width) + '\n';
   if (bill.discount > 0) {
     commands += padColumns('Discount Code:', `-Rs. ${bill.discount.toFixed(2)}`, width) + '\n';
   }

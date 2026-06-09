@@ -172,10 +172,6 @@ export const ThermalReceipt: React.FC<ThermalReceiptProps> = ({
                     <span>Subtotal:</span>
                     <span>Rs. {bill.subtotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>GST (18% inclusive):</span>
-                    <span>Rs. {bill.gst.toFixed(2)}</span>
-                  </div>
                   {bill.discount > 0 && (
                     <div className="flex justify-between text-red-700">
                       <span>Discount Coupon:</span>
