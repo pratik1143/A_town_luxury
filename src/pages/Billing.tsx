@@ -233,7 +233,6 @@ export const Billing: React.FC = () => {
   };
 
   const subtotal = cart.reduce((acc, item) => acc + (item.sellingPrice * item.quantity), 0);
-  const gstInclusive = subtotal * 0.18;
   const discountDeduction = Math.round(((subtotal * discount) / 100) * 100) / 100;
   const totalBeforeWallet = Math.max(0, subtotal - discountDeduction);
   const walletDeduction = (applyWallet && selectedCustomer) 
